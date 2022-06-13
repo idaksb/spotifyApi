@@ -151,7 +151,7 @@ class SpotifyAPI(object):
         return sort_term.get(search_term)
 
     def sort_playlist(self, playlist):
-        tracks_ids = [0]
+        tracks_ids = []
 
         playlist = self.sort(playlist,"tracks")
         playlist = self.sort(playlist,"items")
@@ -163,6 +163,7 @@ class SpotifyAPI(object):
             tracks_ids[i] = self.sort(playlist_sorted,"id")
 
         return tracks_ids
+
     def sort_track(self,track_id):
         track=self.get_tracks(track_id)
 
@@ -172,9 +173,13 @@ class SpotifyAPI(object):
         track_artist = track_artist[0]
         track_artist = self.sort(track_artist,"name")
 
-        track_liste = [track_name,track_artist]
+        track_image = self.sort(track,"album")
+        track_image = self.sort(track_image,"images")
+        track_image = track_image[0]
+        track_image= dict(track_image)
 
-        track_dict = self.track_dict
+        track_liste = [track_name,track_artist,track_image]
+
         self.track_dict.update({track_id:track_liste})
         return self.track_dict
 
@@ -185,5 +190,7 @@ spotify = SpotifyAPI(client_id, client_secret)
 
 
 
-playlist = spotify.get_playlist("3cEYpjA9oz9GiPac4AsH4n")
-spotify.stop_track
+#playlist = spotify.get_playlist("3cEYpjA9oz9GiPac4AsH4n")
+#spotify.sort_track("4rzfv0JLZfVhOhbSQ8o5jZ")
+#print(spotify.sort_playlist(playlist))
+#spotify.stop_track
