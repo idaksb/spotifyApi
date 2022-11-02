@@ -8,7 +8,9 @@
 import base64
 import datetime
 from urllib.parse import urlencode
-
+import spotipy
+import json
+import webbrowser
 import requests
 
 
@@ -21,11 +23,12 @@ class SpotifyAPI(object):
     access_token_did_expire = True
     client_id = None
     client_secret = None
+    username = '31me2zqygspuwl66hu4chskv7iky'
+    redirectURI = 'https://www.startpage.com/'
     token_url = "https://accounts.spotify.com/api/token"
     track_dict={}
     
-    def __init__(self, client_id, client_secret, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret
 
@@ -97,15 +100,11 @@ class SpotifyAPI(object):
         if r.status_code not in range(200, 299):
             return {}
         return r.json()
-    
-    def get_album(self, _id):
-        return self.get_resource(_id, resource_type='albums')
 
     def get_playlist(self, _id):
         return self.get_resource(_id, resource_type='playlists')
     
-    def get_artist(self, _id):
-        return self.get_resource(_id, resource_type='artists')
+
 
     def get_tracks(self, _id):
         return self.get_resource(_id, resource_type='tracks')
@@ -119,7 +118,7 @@ class SpotifyAPI(object):
             return {}
         return r.json()
     
-    def search(self, query=None, operator=None, operator_query=None, search_type='artist' ):
+    def search(self, query=None, operator=None, operator_query=None, search_type='playlist' ):
         if query == None:
             raise Exception("A query is required")
         if isinstance(query, dict):
@@ -133,18 +132,6 @@ class SpotifyAPI(object):
         print(query_params)
         return self.base_search(query_params)
 
-    def play_track(self,track_id):
-        pass
-
-    def stop_track(self):
-        headers = self.get_resource_header()
-        requests.get("https://api.spotify.com/v1/31me2zqygspuwl66hu4chskv7iky/player/pause",headers=headers)
-        pass
-
-    def start_track(self):
-        headers = self.get_resource_header()
-        requests.get("https://api.spotify.com/v1/31me2zqygspuwl66hu4chskv7iky/player/play",headers=headers)
-        pass
 
     def sort(self, sort_term, search_term):
         sort_term = dict(sort_term)
@@ -183,14 +170,10 @@ class SpotifyAPI(object):
         self.track_dict.update({track_id:track_liste})
         return self.track_dict
 
-client_id="8e5ec3fce24c493e8fec09e90a061596"
-client_secret = "2de425668fec4d9ea44dbfb0f0d2c04d"
+    def sort_search(self,search):
+        search = self.sort(search,"playlists")
+        search = self.sort(search,"items")
+        search = search[0]
+        search = self.sort(search,"id")
+        return search
 
-spotify = SpotifyAPI(client_id, client_secret)
-
-
-
-#playlist = spotify.get_playlist("3cEYpjA9oz9GiPac4AsH4n")
-#spotify.sort_track("4rzfv0JLZfVhOhbSQ8o5jZ")
-#print(spotify.sort_playlist(playlist))
-#spotify.stop_track

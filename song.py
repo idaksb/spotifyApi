@@ -5,6 +5,7 @@ import button
 import pygame
 import image
 from pygame.locals import *
+import song_abspielen
 
 class Song():
     x = None
@@ -32,6 +33,7 @@ class Song():
         self.objekt_number = objekt_number
         vote_width = self.vote_png.get_width()
         self.api = spotify.SpotifyAPI(self.client_id, self.client_secret)
+        self.song_play = song_abspielen.song_Play(self.client_id,self.client_secret)
 
         
         self.play_button=button.Button(x,y,self.play,0.5)
@@ -43,6 +45,7 @@ class Song():
     def new_song(self,song_id):
         song = self.api.sort_track(song_id)
         song_liste = song.get(song_id)
+        self.name = song_liste[0] 
         self.text = self.font(song_liste[0]+" von "+song_liste[1])
         image = song_liste[2]
         image = dict(image)
@@ -72,6 +75,7 @@ class Song():
             if self.play_status:
                 self.play_status = False 
                 self.play_button.change_image(self.pause)
+                self.song_play.play_Song(self.name)
             else:
                 self.play_status = True 
                 self.play_button.change_image(self.play)

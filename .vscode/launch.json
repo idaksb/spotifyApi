@@ -1,0 +1,12 @@
+{
+    "version": "2.9.7",
+    "configurations": [
+        {
+            "name": "html_song.html",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "file": "${workspaceFolder}/html_song.html"
+        }
+    ]
+}
